@@ -1,0 +1,39 @@
+Add CAMERA permission to the Android manifest
+```
+   <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+```
+Check permission at the runtime
+
+```
+  if (ActivityCompat.checkSelfPermission(this, permission.CAMERA) ==
+                PackageManager.PERMISSION_GRANTED) {
+                // This is where we will access the camera and show the preview.
+            renderCameraPreview()
+        } else {
+                ActivityCompat.requestPermissions(this,
+                    arrayOf(permission.CAMERA),
+                    CAMERA_REQUEST_CODE)
+        }
+```
+
+If permission is granted then render the camera preview otherwise make a request for the camera permission.
+
+  ```
+      override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == CAMERA_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults.first() == PackageManager.PERMISSION_GRANTED) {
+                renderCameraPreview();
+            }
+        } else {
+            findViewById<TextView>(R.id.temp_error_text).text = getText(R.string.camera_permission_denied)
+        }
+    }
+```
